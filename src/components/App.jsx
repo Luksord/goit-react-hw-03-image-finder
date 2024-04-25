@@ -9,7 +9,7 @@ import { Modal } from './Modal/Modal';
 import './styles.css';
 
 export const App = () => {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState('cat'); // Ustawienie domyślnej wartości dla frazy wyszukiwania
   const [page, setPage] = useState(1);
   const [loader, setLoader] = useState(false);
   const [images, setImages] = useState([]);
@@ -30,7 +30,7 @@ export const App = () => {
           key: apiKey,
           image_type: 'photo',
           orientation: 'horizontal',
-          per_page: 12,
+          per_page: 20,
           safesearch: true,
         });
         const response = await axios.get(`${baseUrl}?${searchParams}`);
@@ -85,6 +85,13 @@ export const App = () => {
   const handleLoadMore = async () => {
     setPage(prevPage => prevPage + 1);
     setLoader(true); // Włączenie ikonki ładowania
+    // try {
+    //   setPage(prevPage => prevPage + 1);
+    // } catch (error) {
+    //   console.error('Error loading more data:', error);
+    //   } finally {
+    //     setLoader(false); // Wyłączenie ikonki ładowania
+    //   }
   };
   // loadMore z JS
   // loadMoreBtn.addEventListener('click', async () => {
@@ -118,7 +125,9 @@ export const App = () => {
       ) : (
         <ImageGallery images={images} openModal={handleImageClick} />
       )}
-      {images.length > 0 && <Button onClick={handleLoadMore}>Load More</Button>}
+      {!loader && images.length > 0 && (
+        <Button onClick={handleLoadMore}>Load More</Button>
+      )}
       {showModal && (
         <Modal imageUrl={modalImageUrl} onClose={handleCloseModal} />
       )}
